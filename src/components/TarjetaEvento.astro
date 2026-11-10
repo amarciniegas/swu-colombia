@@ -1,0 +1,91 @@
+---
+import type { Evento } from '../data/eventos';
+
+interface Props {
+  evento: Evento;
+}
+
+const { evento } = Astro.props;
+const fecha = new Date(`${evento.fecha}T12:00:00Z`);
+const dia = fecha.toLocaleDateString('es-CO', { day: '2-digit', timeZone: 'UTC' });
+const mes = fecha
+  .toLocaleDateString('es-CO', { month: 'short', timeZone: 'UTC' })
+  .replace('.', '')
+  .toUpperCase();
+const fechaLarga = fecha.toLocaleDateString('es-CO', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  timeZone: 'UTC',
+});
+---
+
+<article class="evento" data-ciudad={evento.ciudad}>
+  <time class="evento__fecha" datetime={evento.fecha}>
+    <span class="evento__dia">{dia}</span>
+    <span class="evento__mes">{mes}</span>
+    <span class="solo-lectores">{fechaLarga}</span>
+  </time>
+  <div class="evento__info">
+    <p class="etiqueta">{evento.ciudad} · {evento.tipo}</p>
+    <h3 class="evento__titulo">{evento.titulo}</h3>
+    <p class="evento__lugar">{evento.tienda} · {evento.hora}</p>
+  </div>
+</article>
+
+<style>
+  .evento {
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-md);
+    padding: 20px;
+    display: flex;
+    gap: 18px;
+    background: var(--color-blanco);
+  }
+
+  .evento[hidden] {
+    display: none;
+  }
+
+  .evento__fecha {
+    width: 64px;
+    height: 72px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: var(--color-fondo-suave);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .evento__dia {
+    font-family: var(--font-titulos);
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .evento__mes {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-texto-suave);
+  }
+
+  .evento__info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .evento__titulo {
+    font-size: 19px;
+    font-weight: 700;
+  }
+
+  .evento__lugar {
+    font-size: 14px;
+    color: var(--color-texto-suave);
+  }
+</style>

@@ -1,0 +1,17 @@
+---
+// Símbolo de SWU Colombia: estrella de cuatro puntas con centro amarillo.
+interface Props {
+  tamano?: number;
+  color?: string;
+  centro?: string;
+}
+const { tamano = 36, color = 'var(--color-marino)', centro = 'var(--color-amarillo)' } = Astro.props;
+---
+
+<svg width={tamano} height={tamano} viewBox="0 0 88 88" aria-hidden="true" focusable="false">
+  <path
+    d="M44 4 C47 32 56 41 84 44 C56 47 47 56 44 84 C41 56 32 47 4 44 C32 41 41 32 44 4 Z"
+    fill={color}
+  ></path>
+  <circle cx="44" cy="44" r="7" fill={centro}></circle>
+</svg>

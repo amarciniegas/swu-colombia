@@ -1,0 +1,107 @@
+---
+import Estrella from './Estrella.astro';
+
+const anio = new Date().getFullYear();
+const enlaces = [
+  { texto: 'Eventos', href: '/eventos' },
+  { texto: 'Noticias', href: '/noticias' },
+  { texto: 'Aprende', href: '/aprende' },
+  { texto: 'Acerca de', href: '/acerca' },
+  { texto: 'Contacto', href: '/contacto' },
+];
+---
+
+<footer class="footer">
+  <div class="contenedor footer__contenido">
+    <div class="footer__fila">
+      <a href="/" class="footer__logo">
+        <Estrella tamano={32} color="#ffffff" />
+        <span>SWU Colombia</span>
+      </a>
+      <nav aria-label="Pie de página" class="footer__nav">
+        {enlaces.map((e) => <a href={e.href}>{e.texto}</a>)}
+      </nav>
+    </div>
+
+    <div class="franja footer__franja" aria-hidden="true"><span></span><span></span><span></span></div>
+
+    <p class="footer__aviso">
+      Sitio de fans no oficial. Star Wars: Unlimited y los elementos relacionados son propiedad de
+      Lucasfilm Ltd. y Fantasy Flight Games. SWU Colombia no está afiliado ni respaldado por ellos.
+    </p>
+    <p class="footer__aviso">© {anio} SWU Colombia</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--color-marino);
+    color: var(--color-texto-claro);
+  }
+
+  .footer__contenido {
+    padding-block: 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .footer__fila {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .footer__logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--color-blanco);
+    font-family: var(--font-titulos);
+    font-size: 20px;
+    font-weight: 800;
+  }
+
+  .footer__logo:hover {
+    color: var(--color-blanco);
+  }
+
+  .footer__nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .footer__nav a {
+    color: var(--color-texto-claro);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  .footer__nav a:hover {
+    color: var(--color-blanco);
+    text-decoration: underline;
+  }
+
+  .footer__franja {
+    height: 3px;
+    max-width: 160px;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  /* azul más claro para que se vea sobre el fondo marino */
+  .footer__franja span:nth-child(2) {
+    background: #3d6fd1;
+  }
+
+  .footer__aviso {
+    font-size: 13px;
+    line-height: 1.6;
+    max-width: 760px;
+  }
+</style>

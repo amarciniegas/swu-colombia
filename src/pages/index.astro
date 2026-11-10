@@ -1,0 +1,361 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import TarjetaEvento from '../components/TarjetaEvento.astro';
+import TarjetaNoticia from '../components/TarjetaNoticia.astro';
+import { sitio, redes, ciudades } from '../data/sitio';
+import { eventos } from '../data/eventos';
+import { noticias } from '../data/noticias';
+
+const proximos = [...eventos].sort((a, b) => a.fecha.localeCompare(b.fecha)).slice(0, 6);
+
+const comunidad = [
+  {
+    nombre: 'WhatsApp',
+    texto: 'Avisos de torneos y el día a día de la comunidad.',
+    accion: 'Unirme al grupo',
+    href: redes.whatsapp,
+    icono: 'chat',
+  },
+  {
+    nombre: 'Discord',
+    texto: 'Charla de mazos, metajuego y partidas online.',
+    accion: 'Entrar al servidor',
+    href: redes.discord,
+    icono: 'servidor',
+  },
+  {
+    nombre: 'Instagram',
+    texto: 'Fotos de torneos, ganadores y novedades.',
+    accion: 'Seguir',
+    href: redes.instagram,
+    icono: 'camara',
+  },
+];
+---
+
+<BaseLayout>
+  <!-- Portada -->
+  <section class="hero">
+    <div class="contenedor hero__fila">
+      <div class="hero__texto">
+        <p class="hero__eyebrow">Comunidad de Star Wars: Unlimited</p>
+        <h1 class="hero__titulo">Juega, compite y conecta con jugadores de todo el país.</h1>
+        <p class="hero__sub">
+          Torneos en tu ciudad, noticias del metajuego y todo lo que necesitas para empezar a jugar.
+        </p>
+        <div class="hero__botones">
+          <a href="#eventos" class="boton boton--amarillo">Ver próximos eventos</a>
+          <a href="/aprende" class="boton boton--borde-claro">Soy nuevo, ¿cómo empiezo?</a>
+        </div>
+        <p class="hero__dato">
+          <strong>+{sitio.jugadoresActivos}</strong> jugadores activos y creciendo
+        </p>
+      </div>
+      <div class="hero__arte" aria-hidden="true">
+        <svg viewBox="0 0 88 88">
+          <path d="M44 4 C47 32 56 41 84 44 C56 47 47 56 44 84 C41 56 32 47 4 44 C32 41 41 32 44 4 Z" fill="#1b2a57"></path>
+          <path d="M44 20 C45.5 36 52 42.5 68 44 C52 45.5 45.5 52 44 68 C42.5 52 36 45.5 20 44 C36 42.5 42.5 36 44 20 Z" fill="#ffffff"></path>
+          <circle cx="44" cy="44" r="5" fill="#ffcd00"></circle>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Próximos eventos -->
+  <section class="seccion" id="eventos">
+    <div class="contenedor">
+      <div class="seccion__cabecera">
+        <h2 class="seccion__titulo">Próximos eventos</h2>
+        <a href="/eventos" class="enlace-flecha">Ver calendario completo →</a>
+      </div>
+
+      <div class="filtros" role="group" aria-label="Filtrar eventos por ciudad">
+        <button type="button" class="filtro" aria-pressed="true" data-ciudad="todas">Todas</button>
+        {ciudades.map((c) => (
+          <button type="button" class="filtro" aria-pressed="false" data-ciudad={c}>{c}</button>
+        ))}
+      </div>
+
+      <div class="grilla" id="lista-eventos">
+        {proximos.map((evento) => <TarjetaEvento evento={evento} />)}
+      </div>
+      <p class="sin-eventos" id="sin-eventos" hidden>
+        No hay eventos próximos en esta ciudad todavía. ¡Pregunta en el grupo de WhatsApp!
+      </p>
+      <p class="solo-lectores" aria-live="polite" id="aviso-filtro"></p>
+    </div>
+  </section>
+
+  <!-- Noticias -->
+  <section class="seccion seccion--suave">
+    <div class="contenedor">
+      <div class="seccion__cabecera">
+        <h2 class="seccion__titulo">Noticias y metajuego</h2>
+        <a href="/noticias" class="enlace-flecha">Ver todas →</a>
+      </div>
+      <div class="grilla">
+        {noticias.slice(0, 3).map((n) => <TarjetaNoticia noticia={n} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Principiantes -->
+  <section class="seccion">
+    <div class="contenedor">
+      <div class="nuevos">
+        <div class="nuevos__texto">
+          <h2 class="nuevos__titulo">¿Nuevo en Star Wars: Unlimited?</h2>
+          <p>
+            Aprende las reglas básicas, arma tu primer mazo y encuentra una tienda cerca para tu
+            primera partida.
+          </p>
+        </div>
+        <div class="nuevos__botones">
+          <a href="/aprende" class="boton boton--azul">Guía para principiantes</a>
+          <a href="/herramientas" class="boton boton--borde">Herramientas</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comunidad -->
+  <section class="seccion seccion--suave" id="comunidad">
+    <div class="contenedor">
+      <div class="seccion__cabecera">
+        <h2 class="seccion__titulo">Únete a la comunidad</h2>
+      </div>
+      <div class="grilla">
+        {comunidad.map((c) => (
+          <div class="red">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              {c.icono === 'chat' && <path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.2A8.5 8.5 0 1 1 21 12z" />}
+              {c.icono === 'servidor' && (
+                <>
+                  <rect x="3" y="5" width="18" height="12" rx="3" />
+                  <path d="M8 21l4-4 4 4" />
+                  <circle cx="9" cy="11" r="1" />
+                  <circle cx="15" cy="11" r="1" />
+                </>
+              )}
+              {c.icono === 'camara' && (
+                <>
+                  <rect x="3" y="3" width="18" height="18" rx="5" />
+                  <circle cx="12" cy="12" r="4" />
+                  <circle cx="17.5" cy="6.5" r="0.8" />
+                </>
+              )}
+            </svg>
+            <h3 class="red__nombre">{c.nombre}</h3>
+            <p class="red__texto">{c.texto}</p>
+            <a href={c.href} class="enlace-flecha" target="_blank" rel="noopener noreferrer">
+              {c.accion} →<span class="solo-lectores"> (abre en otra pestaña)</span>
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ---------- Portada ---------- */
+  .hero {
+    background: var(--color-marino);
+    color: var(--color-blanco);
+  }
+
+  .hero__fila {
+    padding-block: clamp(56px, 9vw, 88px);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 48px;
+  }
+
+  .hero__texto {
+    flex: 999 1 520px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .hero__eyebrow {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--color-amarillo);
+  }
+
+  .hero__titulo {
+    font-size: clamp(36px, 6vw, 56px);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1.05;
+  }
+
+  .hero__sub {
+    max-width: 560px;
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--color-texto-claro);
+  }
+
+  .hero__botones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .hero__dato {
+    font-size: 15px;
+    color: var(--color-texto-claro);
+  }
+
+  .hero__dato strong {
+    font-family: var(--font-titulos);
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--color-blanco);
+    margin-right: 4px;
+  }
+
+  .hero__arte {
+    flex: 1 1 240px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .hero__arte svg {
+    width: min(280px, 60vw);
+    height: auto;
+  }
+
+  /* ---------- Filtros ---------- */
+  .filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .filtro {
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    min-height: 44px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--color-borde-fuerte);
+    background: var(--color-blanco);
+    color: var(--color-marino);
+    cursor: pointer;
+  }
+
+  .filtro:hover {
+    border-color: var(--color-marino);
+  }
+
+  .filtro[aria-pressed='true'] {
+    background: var(--color-marino);
+    border-color: var(--color-marino);
+    color: var(--color-blanco);
+    font-weight: 600;
+  }
+
+  .sin-eventos {
+    padding: 24px;
+    border: 1px dashed var(--color-borde-fuerte);
+    border-radius: var(--radio-md);
+    color: var(--color-texto-suave);
+  }
+
+  /* ---------- Principiantes ---------- */
+  .nuevos {
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-lg);
+    padding: clamp(24px, 4vw, 40px);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+  }
+
+  .nuevos__texto {
+    flex: 999 1 420px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: var(--color-texto-suave);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  .nuevos__titulo {
+    font-size: clamp(26px, 4vw, 32px);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--color-marino);
+  }
+
+  .nuevos__botones {
+    flex: 1 1 260px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* ---------- Comunidad ---------- */
+  .red {
+    background: var(--color-blanco);
+    border-radius: var(--radio-md);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    color: var(--color-azul);
+  }
+
+  .red__nombre {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-marino);
+  }
+
+  .red__texto {
+    font-size: 15px;
+    color: var(--color-texto-suave);
+    flex-grow: 1;
+  }
+</style>
+
+<script>
+  // Filtro de eventos por ciudad (funciona sin recargar la página).
+  const botones = document.querySelectorAll<HTMLButtonElement>('.filtro');
+  const tarjetas = document.querySelectorAll<HTMLElement>('#lista-eventos [data-ciudad]');
+  const sinEventos = document.getElementById('sin-eventos');
+  const aviso = document.getElementById('aviso-filtro');
+
+  botones.forEach((boton) => {
+    boton.addEventListener('click', () => {
+      const ciudad = boton.dataset.ciudad;
+      botones.forEach((b) => b.setAttribute('aria-pressed', String(b === boton)));
+
+      let visibles = 0;
+      tarjetas.forEach((t) => {
+        const mostrar = ciudad === 'todas' || t.dataset.ciudad === ciudad;
+        t.hidden = !mostrar;
+        if (mostrar) visibles++;
+      });
+
+      if (sinEventos) sinEventos.hidden = visibles > 0;
+      if (aviso) {
+        aviso.textContent =
+          visibles === 1 ? 'Se muestra 1 evento.' : `Se muestran ${visibles} eventos.`;
+      }
+    });
+  });
+</script>

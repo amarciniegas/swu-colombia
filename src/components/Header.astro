@@ -1,0 +1,160 @@
+---
+import Estrella from './Estrella.astro';
+import { navegacion } from '../data/sitio';
+---
+
+<div class="franja" aria-hidden="true"><span></span><span></span><span></span></div>
+
+<header class="header">
+  <div class="contenedor header__fila">
+    <a href="/" class="logo" aria-label="SWU Colombia, inicio">
+      <Estrella tamano={36} />
+      <span class="logo__texto">
+        <span class="logo__swu">SWU</span>
+        <span class="logo__pais">COLOMBIA</span>
+      </span>
+    </a>
+
+    <button
+      class="header__menu-boton"
+      type="button"
+      aria-expanded="false"
+      aria-controls="menu-principal"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M4 7h16M4 12h16M4 17h16"></path>
+      </svg>
+      <span>Menú</span>
+    </button>
+
+    <nav id="menu-principal" class="header__nav" aria-label="Principal">
+      {navegacion.map((item) => (
+        <a href={item.href} class="header__enlace">{item.texto}</a>
+      ))}
+      <a href="/#comunidad" class="boton boton--marino header__cta">Únete</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header {
+    border-bottom: 1px solid var(--color-borde);
+    background: var(--color-blanco);
+  }
+
+  .header__fila {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-block: 14px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--color-marino);
+    min-height: 44px;
+  }
+
+  .logo:hover {
+    color: var(--color-marino);
+  }
+
+  .logo__texto {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+    font-family: var(--font-titulos);
+  }
+
+  .logo__swu {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+
+  .logo__pais {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 4px;
+  }
+
+  .header__nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .header__enlace {
+    text-decoration: none;
+    color: var(--color-marino);
+    font-size: 15px;
+    font-weight: 500;
+    padding: 12px 14px;
+    border-radius: 8px;
+  }
+
+  .header__enlace:hover {
+    background: var(--color-fondo-suave);
+    color: var(--color-marino);
+  }
+
+  .header__cta {
+    margin-left: 8px;
+    min-height: 44px;
+    font-size: 15px;
+  }
+
+  .header__menu-boton {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 8px 14px;
+    border: 1px solid var(--color-borde-fuerte);
+    border-radius: var(--radio-sm);
+    background: var(--color-blanco);
+    color: var(--color-marino);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* Celular: el menú se abre con el botón */
+  @media (max-width: 860px) {
+    .header__menu-boton {
+      display: inline-flex;
+    }
+
+    .header__nav {
+      display: none;
+      flex-basis: 100%;
+      flex-direction: column;
+      align-items: stretch;
+      padding-top: 8px;
+    }
+
+    .header__nav.abierto {
+      display: flex;
+    }
+
+    .header__cta {
+      margin: 8px 0 0;
+    }
+  }
+</style>
+
+<script>
+  const boton = document.querySelector<HTMLButtonElement>('.header__menu-boton');
+  const nav = document.getElementById('menu-principal');
+
+  boton?.addEventListener('click', () => {
+    const abierto = boton.getAttribute('aria-expanded') === 'true';
+    boton.setAttribute('aria-expanded', String(!abierto));
+    nav?.classList.toggle('abierto', !abierto);
+  });
+</script>
