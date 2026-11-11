@@ -1,0 +1,40 @@
+---
+// Sable azul (heroico) y rojo (oscuro) cruzados sobre la estrella de SWU Colombia.
+const sables = [
+  { x1: 46, y1: 176, x2: 130, y2: 26, hx: 34, hy: 196, hoja: '#e6f3ff', brillo: '#4da3ff' },
+  { x1: 114, y1: 176, x2: 30, y2: 26, hx: 126, hy: 196, hoja: '#ffe3e5', brillo: '#e5333f' },
+];
+---
+
+<svg
+  class="sables"
+  width="160"
+  height="220"
+  viewBox="0 0 160 220"
+  role="img"
+  aria-label="Sable azul y sable rojo cruzados sobre la estrella de SWU Colombia"
+>
+  {sables.map((s) => (
+    <g>
+      <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke={s.brillo} stroke-width="18" stroke-linecap="round" opacity="0.2" />
+      <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke={s.brillo} stroke-width="9" stroke-linecap="round" opacity="0.45" />
+      <line x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke={s.hoja} stroke-width="4" stroke-linecap="round" />
+      <line x1={s.hx} y1={s.hy} x2={s.x1} y2={s.y1} stroke="#8a93a6" stroke-width="7" stroke-linecap="round" />
+      <line x1={s.hx} y1={s.hy} x2={s.x1} y2={s.y1} stroke="#3a4258" stroke-width="7" stroke-linecap="round" stroke-dasharray="2 4" />
+    </g>
+  ))}
+  <circle cx="80" cy="115" r="26" fill="#ffffff" opacity="0.08" />
+  <circle cx="80" cy="115" r="14" fill="#ffffff" opacity="0.18" />
+  <g transform="translate(58 93) scale(0.5)">
+    <path d="M44 4 C47 32 56 41 84 44 C56 47 47 56 44 84 C41 56 32 47 4 44 C32 41 41 32 44 4 Z" fill="#ffffff" />
+    <circle cx="44" cy="44" r="7" fill="#ffcd00" />
+  </g>
+</svg>
+
+<style>
+  .sables {
+    display: block;
+    overflow: visible;
+    flex-shrink: 0;
+  }
+</style>

@@ -15,11 +15,10 @@ export const navegacion = [
   { texto: 'Comunidad', href: '/#comunidad' },
 ];
 
-// TODO: reemplaza '#' por los enlaces reales de invitación.
 export const redes = {
-  whatsapp: '#',
-  discord: '#',
-  instagram: '#',
+  whatsapp: 'https://chat.whatsapp.com/Hf2CGYg1gjTKvLFei9fBo2',
+  discord: '#', // TODO: enlace de invitación al Discord
+  instagram: 'https://www.instagram.com/starwarsunlimitedco',
 };
 
 export const ciudades = ['Bogotá', 'Medellín', 'Barranquilla', 'Cali'];

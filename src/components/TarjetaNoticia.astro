@@ -12,15 +12,19 @@ const fecha = new Date(`${noticia.fecha}T12:00:00Z`).toLocaleDateString('es-CO',
   year: 'numeric',
   timeZone: 'UTC',
 });
-const esReporte = noticia.categoria === 'Reporte de torneo';
+const colorCategoria = {
+  Estrategia: '',
+  Expansiones: 'etiqueta--amarillo',
+  'Reporte de torneo': 'etiqueta--villano',
+}[noticia.categoria];
 ---
 
-<article class="noticia">
+<article class="noticia tarjeta">
   <div class="noticia__imagen" aria-hidden="true">
-    <svg width="40" height="40" viewBox="0 0 88 88"><path d="M44 4 C47 32 56 41 84 44 C56 47 47 56 44 84 C41 56 32 47 4 44 C32 41 41 32 44 4 Z" fill="#b9c3da"></path></svg>
+    <svg width="40" height="40" viewBox="0 0 88 88"><path d="M44 4 C47 32 56 41 84 44 C56 47 47 56 44 84 C41 56 32 47 4 44 C32 41 41 32 44 4 Z" fill="#2e3b60"></path></svg>
   </div>
   <div class="noticia__cuerpo">
-    <p class:list={['etiqueta', { 'etiqueta--rojo': esReporte }]}>{noticia.categoria}</p>
+    <p class:list={['etiqueta', colorCategoria]}>{noticia.categoria}</p>
     <h3 class="noticia__titulo">
       <a href={noticia.href}>{noticia.titulo}</a>
     </h3>
@@ -31,21 +35,19 @@ const esReporte = noticia.categoria === 'Reporte de torneo';
 <style>
   .noticia {
     position: relative;
-    background: var(--color-blanco);
-    border-radius: var(--radio-md);
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    transition: box-shadow 0.15s ease;
+    transition: border-color 0.15s ease;
   }
 
   .noticia:hover {
-    box-shadow: 0 6px 24px rgba(15, 27, 61, 0.1);
+    border-color: var(--color-borde-fuerte);
   }
 
   .noticia__imagen {
     height: 168px;
-    background: var(--color-placeholder);
+    background: var(--color-superficie-2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -65,7 +67,7 @@ const esReporte = noticia.categoria === 'Reporte de torneo';
   }
 
   .noticia__titulo a {
-    color: var(--color-marino);
+    color: var(--color-texto);
     text-decoration: none;
   }
 

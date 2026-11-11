@@ -2,64 +2,118 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TarjetaEvento from '../components/TarjetaEvento.astro';
 import TarjetaNoticia from '../components/TarjetaNoticia.astro';
+import SablesCruzados from '../components/SablesCruzados.astro';
+import EventoDestacado from '../components/EventoDestacado.astro';
 import { sitio, redes, ciudades } from '../data/sitio';
 import { eventos } from '../data/eventos';
 import { noticias } from '../data/noticias';
 
-const proximos = [...eventos].sort((a, b) => a.fecha.localeCompare(b.fecha)).slice(0, 6);
+const hoy = new Date().toISOString().slice(0, 10);
+const futuros = [...eventos]
+  .filter((e) => e.fecha >= hoy)
+  .sort((a, b) => a.fecha.localeCompare(b.fecha));
+const destacados = futuros.filter((e) => e.destacado);
+const proximos = futuros.filter((e) => !e.destacado).slice(0, 6);
+
+const lados = [
+  {
+    clase: 'lado--heroe',
+    etiqueta: 'Lado heroico',
+    titulo: 'Heroísmo',
+    texto: 'Defiende a tu tienda local en los torneos semanales y ayuda a que la comunidad siga creciendo.',
+    enlace: 'Ver eventos en mi ciudad',
+    href: '#eventos',
+  },
+  {
+    clase: 'lado--villano',
+    etiqueta: 'Lado oscuro',
+    titulo: 'Villanía',
+    texto: 'Domina el metajuego con estrategias, análisis de expansiones y reportes de los torneos locales.',
+    enlace: 'Leer sobre el metajuego',
+    href: '/noticias',
+  },
+];
 
 const comunidad = [
-  {
-    nombre: 'WhatsApp',
-    texto: 'Avisos de torneos y el día a día de la comunidad.',
-    accion: 'Unirme al grupo',
-    href: redes.whatsapp,
-    icono: 'chat',
-  },
-  {
-    nombre: 'Discord',
-    texto: 'Charla de mazos, metajuego y partidas online.',
-    accion: 'Entrar al servidor',
-    href: redes.discord,
-    icono: 'servidor',
-  },
-  {
-    nombre: 'Instagram',
-    texto: 'Fotos de torneos, ganadores y novedades.',
-    accion: 'Seguir',
-    href: redes.instagram,
-    icono: 'camara',
-  },
+  { nombre: 'WhatsApp', texto: 'Avisos de torneos y el día a día de la comunidad.', accion: 'Unirme al grupo', href: redes.whatsapp, icono: 'chat' },
+  { nombre: 'Discord', texto: 'Charla de mazos, metajuego y partidas online.', accion: 'Entrar al servidor', href: redes.discord, icono: 'servidor' },
+  { nombre: 'Instagram', texto: 'Fotos de torneos, ganadores y novedades.', accion: 'Seguir', href: redes.instagram, icono: 'camara' },
+];
+
+// Estrellas de fondo de la portada: [x %, y %, radio, opacidad]
+const estrellas = [
+  [6, 14, 1.2, 0.6], [14, 42, 0.8, 0.4], [22, 8, 1, 0.5], [31, 30, 0.7, 0.35],
+  [38, 12, 1.3, 0.55], [47, 22, 0.8, 0.4], [56, 6, 1, 0.5], [63, 34, 0.7, 0.35],
+  [71, 16, 1.2, 0.6], [79, 40, 0.8, 0.4], [86, 10, 1, 0.5], [94, 28, 1.3, 0.55],
+  [9, 70, 0.8, 0.35], [91, 76, 0.8, 0.35], [50, 88, 1, 0.4],
 ];
 ---
 
 <BaseLayout>
   <!-- Portada -->
   <section class="hero">
-    <div class="contenedor hero__fila">
-      <div class="hero__texto">
-        <p class="hero__eyebrow">Comunidad de Star Wars: Unlimited</p>
-        <h1 class="hero__titulo">Juega, compite y conecta con jugadores de todo el país.</h1>
-        <p class="hero__sub">
-          Torneos en tu ciudad, noticias del metajuego y todo lo que necesitas para empezar a jugar.
-        </p>
-        <div class="hero__botones">
-          <a href="#eventos" class="boton boton--amarillo">Ver próximos eventos</a>
-          <a href="/aprende" class="boton boton--borde-claro">Soy nuevo, ¿cómo empiezo?</a>
+    <svg class="hero__estrellas" width="100%" height="100%" aria-hidden="true">
+      {estrellas.map(([x, y, r, o]) => (
+        <circle cx={`${x}%`} cy={`${y}%`} r={r} fill="#ffffff" opacity={o} />
+      ))}
+    </svg>
+
+    <div class="contenedor hero__contenido">
+      <div class="hero__marca">
+        <p class="hero__eyebrow">Comunidad de jugadores en Colombia de</p>
+        <img
+          src="/img/swu-logo-blanco.png"
+          alt="Star Wars: Unlimited"
+          width="168"
+          height="120"
+          class="hero__logo"
+        />
+      </div>
+
+      <h1 class="hero__titulo">Elige tu lado. <span>Juega en todo el país.</span></h1>
+      <p class="hero__sub">
+        Torneos en tu ciudad, noticias del metajuego y todo lo que necesitas para empezar a jugar.
+      </p>
+      <div class="hero__botones">
+        <a href="#eventos" class="boton boton--amarillo">Ver próximos eventos</a>
+        <a href="/aprende" class="boton boton--borde">Soy nuevo, ¿cómo empiezo?</a>
+      </div>
+
+      <div class="duelo">
+        <div class:list={['lado', lados[0].clase]}>
+          <span class="lado__linea" aria-hidden="true"></span>
+          <p class="lado__etiqueta">{lados[0].etiqueta}</p>
+          <h2 class="lado__titulo">{lados[0].titulo}</h2>
+          <div class="lado__detalle">
+            <div>
+              <p class="lado__texto">{lados[0].texto}</p>
+              <a href={lados[0].href} class="lado__enlace">{lados[0].enlace} →</a>
+            </div>
+          </div>
         </div>
-        <p class="hero__dato">
-          <strong>+{sitio.jugadoresActivos}</strong> jugadores activos y creciendo
-        </p>
+
+        <SablesCruzados />
+
+        <div class:list={['lado', lados[1].clase]}>
+          <span class="lado__linea" aria-hidden="true"></span>
+          <p class="lado__etiqueta">{lados[1].etiqueta}</p>
+          <h2 class="lado__titulo">{lados[1].titulo}</h2>
+          <div class="lado__detalle">
+            <div>
+              <p class="lado__texto">{lados[1].texto}</p>
+              <a href={lados[1].href} class="lado__enlace">{lados[1].enlace} →</a>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="hero__arte" aria-hidden="true">
-        <svg viewBox="0 0 88 88">
-          <path d="M44 4 C47 32 56 41 84 44 C56 47 47 56 44 84 C41 56 32 47 4 44 C32 41 41 32 44 4 Z" fill="#1b2a57"></path>
-          <path d="M44 20 C45.5 36 52 42.5 68 44 C52 45.5 45.5 52 44 68 C42.5 52 36 45.5 20 44 C36 42.5 42.5 36 44 20 Z" fill="#ffffff"></path>
-          <circle cx="44" cy="44" r="5" fill="#ffcd00"></circle>
-        </svg>
-      </div>
+
+      <p class="hero__dato">
+        <strong>+{sitio.jugadoresActivos}</strong> jugadores activos y creciendo
+      </p>
     </div>
   </section>
+
+  <div class="linea-duelo" aria-hidden="true"><span></span><span></span></div>
 
   <!-- Próximos eventos -->
   <section class="seccion" id="eventos">
@@ -76,6 +130,8 @@ const comunidad = [
         ))}
       </div>
 
+      {destacados.map((evento) => <EventoDestacado evento={evento} />)}
+
       <div class="grilla" id="lista-eventos">
         {proximos.map((evento) => <TarjetaEvento evento={evento} />)}
       </div>
@@ -87,7 +143,7 @@ const comunidad = [
   </section>
 
   <!-- Noticias -->
-  <section class="seccion seccion--suave">
+  <section class="seccion seccion--alterna">
     <div class="contenedor">
       <div class="seccion__cabecera">
         <h2 class="seccion__titulo">Noticias y metajuego</h2>
@@ -102,31 +158,34 @@ const comunidad = [
   <!-- Principiantes -->
   <section class="seccion">
     <div class="contenedor">
-      <div class="nuevos">
-        <div class="nuevos__texto">
-          <h2 class="nuevos__titulo">¿Nuevo en Star Wars: Unlimited?</h2>
-          <p>
-            Aprende las reglas básicas, arma tu primer mazo y encuentra una tienda cerca para tu
-            primera partida.
-          </p>
-        </div>
-        <div class="nuevos__botones">
-          <a href="/aprende" class="boton boton--azul">Guía para principiantes</a>
-          <a href="/herramientas" class="boton boton--borde">Herramientas</a>
+      <div class="nuevos tarjeta">
+        <div class="linea-duelo" aria-hidden="true"><span></span><span></span></div>
+        <div class="nuevos__fila">
+          <div class="nuevos__texto">
+            <h2 class="nuevos__titulo">¿Nuevo en Star Wars: Unlimited?</h2>
+            <p>
+              Aprende las reglas básicas, arma tu primer mazo y encuentra una tienda cerca para tu
+              primera partida.
+            </p>
+          </div>
+          <div class="nuevos__botones">
+            <a href="/aprende" class="boton boton--amarillo">Guía para principiantes</a>
+            <a href="/herramientas" class="boton boton--borde">Herramientas</a>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Comunidad -->
-  <section class="seccion seccion--suave" id="comunidad">
+  <section class="seccion seccion--alterna" id="comunidad">
     <div class="contenedor">
       <div class="seccion__cabecera">
         <h2 class="seccion__titulo">Únete a la comunidad</h2>
       </div>
       <div class="grilla">
         {comunidad.map((c) => (
-          <div class="red">
+          <div class="red tarjeta">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               {c.icono === 'chat' && <path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.2A8.5 8.5 0 1 1 21 12z" />}
               {c.icono === 'servidor' && (
@@ -147,9 +206,13 @@ const comunidad = [
             </svg>
             <h3 class="red__nombre">{c.nombre}</h3>
             <p class="red__texto">{c.texto}</p>
-            <a href={c.href} class="enlace-flecha" target="_blank" rel="noopener noreferrer">
-              {c.accion} →<span class="solo-lectores"> (abre en otra pestaña)</span>
-            </a>
+            {c.href === '#' ? (
+              <p class="red__pronto">Enlace muy pronto</p>
+            ) : (
+              <a href={c.href} class="enlace-flecha" target="_blank" rel="noopener noreferrer">
+                {c.accion} →<span class="solo-lectores"> (abre en otra pestaña)</span>
+              </a>
+            )}
           </div>
         ))}
       </div>
@@ -160,24 +223,31 @@ const comunidad = [
 <style>
   /* ---------- Portada ---------- */
   .hero {
-    background: var(--color-marino);
-    color: var(--color-blanco);
+    position: relative;
+    overflow: hidden;
+    background: var(--color-fondo);
   }
 
-  .hero__fila {
-    padding-block: clamp(56px, 9vw, 88px);
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 48px;
+  .hero__estrellas {
+    position: absolute;
+    inset: 0;
   }
 
-  .hero__texto {
-    flex: 999 1 520px;
-    min-width: 0;
+  .hero__contenido {
+    position: relative;
+    padding-block: clamp(56px, 9vw, 88px) 72px;
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 24px;
+    text-align: center;
+  }
+
+  .hero__marca {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
   }
 
   .hero__eyebrow {
@@ -188,29 +258,41 @@ const comunidad = [
     color: var(--color-amarillo);
   }
 
+  .hero__logo {
+    height: clamp(84px, 14vw, 120px);
+    width: auto;
+  }
+
   .hero__titulo {
-    font-size: clamp(36px, 6vw, 56px);
+    max-width: 860px;
+    font-size: clamp(38px, 7vw, 64px);
     font-weight: 800;
-    letter-spacing: -1.5px;
-    line-height: 1.05;
+    letter-spacing: -2px;
+    line-height: 1.02;
+  }
+
+  .hero__titulo span {
+    color: var(--color-texto-suave);
   }
 
   .hero__sub {
-    max-width: 560px;
+    max-width: 600px;
     font-size: 18px;
     line-height: 1.6;
-    color: var(--color-texto-claro);
+    color: var(--color-texto-suave);
   }
 
   .hero__botones {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 12px;
   }
 
   .hero__dato {
+    margin-top: 8px;
     font-size: 15px;
-    color: var(--color-texto-claro);
+    color: var(--color-texto-suave);
   }
 
   .hero__dato strong {
@@ -221,15 +303,150 @@ const comunidad = [
     margin-right: 4px;
   }
 
-  .hero__arte {
-    flex: 1 1 240px;
+  /* ---------- Heroísmo vs. Villanía ---------- */
+  .duelo {
+    width: 100%;
+    margin-top: 40px;
     display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
     justify-content: center;
+    gap: 16px;
+    text-align: left;
   }
 
-  .hero__arte svg {
-    width: min(280px, 60vw);
-    height: auto;
+  .lado {
+    flex: 0 1 300px;
+    margin-top: 40px; /* alinea la tarjeta con el cruce de los sables */
+    border-radius: var(--radio-lg);
+    padding: 24px 28px;
+    border: 1px solid;
+    transition: box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+
+  .lado--heroe {
+    --acento: var(--color-heroe);
+    --acento-texto: var(--color-heroe-texto);
+    --brillo: rgba(77, 163, 255, 0.12);
+    --brillo-fuerte: rgba(77, 163, 255, 0.28);
+    background: #0b1730;
+    border-color: #1e3566;
+    color: var(--color-texto);
+  }
+
+  .lado--villano {
+    --acento: var(--color-villano);
+    --acento-texto: var(--color-villano-texto);
+    --brillo: rgba(229, 51, 63, 0.12);
+    --brillo-fuerte: rgba(229, 51, 63, 0.28);
+    background: #1f0a10;
+    border-color: #5a1a26;
+    color: var(--color-texto);
+  }
+
+  .lado {
+    box-shadow: 0 0 32px var(--brillo);
+  }
+
+  .lado:hover,
+  .lado:focus-within {
+    border-color: var(--acento);
+    box-shadow: 0 0 56px var(--brillo-fuerte);
+  }
+
+  .lado__linea {
+    display: block;
+    width: 56px;
+    height: 3px;
+    border-radius: 2px;
+    margin-bottom: 10px;
+    background: var(--acento);
+    box-shadow: 0 0 12px var(--acento);
+  }
+
+  .lado__etiqueta {
+    margin-bottom: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--acento-texto);
+  }
+
+  .lado__titulo {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+
+  /* La descripción se despliega al pasar el mouse (o con el teclado) */
+  .lado__detalle {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    margin-top: 0;
+    transition: grid-template-rows 0.3s ease, opacity 0.25s ease, margin-top 0.3s ease;
+  }
+
+  .lado__detalle > div {
+    overflow: hidden;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .lado:hover .lado__detalle,
+  .lado:focus-within .lado__detalle {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    margin-top: 10px;
+  }
+
+  .lado__texto {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #c3cbdc;
+  }
+
+  .lado__enlace {
+    font-size: 15px;
+    font-weight: 600;
+    padding-block: 10px;
+    color: var(--acento-texto);
+  }
+
+  .lado__enlace:hover {
+    color: var(--color-blanco);
+  }
+
+  /* En celular no hay "pasar el mouse": se muestran abiertas */
+  @media (hover: none) {
+    .lado__detalle {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      margin-top: 10px;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .lado {
+      flex-basis: 100%;
+      margin-top: 0;
+    }
+
+    .duelo :global(.sables) {
+      order: -1;
+      height: 150px;
+      width: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lado,
+    .lado__detalle {
+      transition: none;
+    }
   }
 
   /* ---------- Filtros ---------- */
@@ -247,20 +464,20 @@ const comunidad = [
     min-height: 44px;
     padding: 10px 18px;
     border-radius: 999px;
-    border: 1px solid var(--color-borde-fuerte);
-    background: var(--color-blanco);
-    color: var(--color-marino);
+    border: 1px solid #2a3658;
+    background: var(--color-superficie);
+    color: var(--color-texto-nav);
     cursor: pointer;
   }
 
   .filtro:hover {
-    border-color: var(--color-marino);
+    border-color: var(--color-texto-suave);
   }
 
   .filtro[aria-pressed='true'] {
-    background: var(--color-marino);
-    border-color: var(--color-marino);
-    color: var(--color-blanco);
+    background: var(--color-blanco);
+    border-color: var(--color-blanco);
+    color: var(--color-fondo);
     font-weight: 600;
   }
 
@@ -273,8 +490,19 @@ const comunidad = [
 
   /* ---------- Principiantes ---------- */
   .nuevos {
-    border: 1px solid var(--color-borde);
     border-radius: var(--radio-lg);
+    overflow: hidden;
+  }
+
+  .nuevos .linea-duelo {
+    height: 3px;
+  }
+
+  .nuevos .linea-duelo span {
+    box-shadow: none;
+  }
+
+  .nuevos__fila {
     padding: clamp(24px, 4vw, 40px);
     display: flex;
     flex-wrap: wrap;
@@ -298,7 +526,7 @@ const comunidad = [
     font-size: clamp(26px, 4vw, 32px);
     font-weight: 800;
     letter-spacing: -0.5px;
-    color: var(--color-marino);
+    color: var(--color-texto);
   }
 
   .nuevos__botones {
@@ -310,19 +538,17 @@ const comunidad = [
 
   /* ---------- Comunidad ---------- */
   .red {
-    background: var(--color-blanco);
-    border-radius: var(--radio-md);
     padding: 24px;
     display: flex;
     flex-direction: column;
     gap: 12px;
-    color: var(--color-azul);
+    color: var(--color-heroe-texto);
   }
 
   .red__nombre {
     font-size: 20px;
     font-weight: 700;
-    color: var(--color-marino);
+    color: var(--color-texto);
   }
 
   .red__texto {
@@ -330,12 +556,18 @@ const comunidad = [
     color: var(--color-texto-suave);
     flex-grow: 1;
   }
+
+  .red__pronto {
+    font-size: 15px;
+    color: var(--color-texto-suave);
+    padding-block: 12px;
+  }
 </style>
 
 <script>
   // Filtro de eventos por ciudad (funciona sin recargar la página).
   const botones = document.querySelectorAll<HTMLButtonElement>('.filtro');
-  const tarjetas = document.querySelectorAll<HTMLElement>('#lista-eventos [data-ciudad]');
+  const tarjetas = document.querySelectorAll<HTMLElement>('.evento-filtrable');
   const sinEventos = document.getElementById('sin-eventos');
   const aviso = document.getElementById('aviso-filtro');
 

@@ -1,0 +1,146 @@
+---
+import type { Evento } from '../data/eventos';
+import { redes } from '../data/sitio';
+
+interface Props {
+  evento: Evento;
+}
+
+const { evento } = Astro.props;
+const fecha = new Date(`${evento.fecha}T12:00:00Z`);
+const fechaLarga = fecha.toLocaleDateString('es-CO', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  timeZone: 'UTC',
+});
+const fechaTexto = fechaLarga.charAt(0).toUpperCase() + fechaLarga.slice(1);
+---
+
+<article class="destacado evento-filtrable" data-ciudad={evento.ciudad}>
+  {evento.insignia && (
+    <img
+      src={evento.insignia}
+      alt={evento.insigniaAlt ?? ''}
+      width="168"
+      height="168"
+      class="destacado__insignia"
+      loading="lazy"
+    />
+  )}
+
+  <div class="destacado__info">
+    <p class="destacado__eyebrow">Evento destacado · Competitivo</p>
+    <h3 class="destacado__titulo">{evento.titulo}</h3>
+
+    <dl class="destacado__datos">
+      <div>
+        <dt>Ciudad</dt>
+        <dd>{evento.ciudad}</dd>
+      </div>
+      <div>
+        <dt>Fecha</dt>
+        <dd><time datetime={evento.fecha}>{fechaTexto}</time></dd>
+      </div>
+      <div>
+        <dt>Hora</dt>
+        <dd>{evento.hora}</dd>
+      </div>
+      <div>
+        <dt>Lugar</dt>
+        <dd>{evento.tienda}</dd>
+      </div>
+      {evento.costo && (
+        <div>
+          <dt>Inscripción</dt>
+          <dd>{evento.costo}</dd>
+        </div>
+      )}
+    </dl>
+
+    {redes.whatsapp !== '#' && (
+      <a href={redes.whatsapp} class="boton boton--amarillo destacado__cta" target="_blank" rel="noopener noreferrer">
+        Pregunta por cupos en WhatsApp<span class="solo-lectores"> (abre en otra pestaña)</span>
+      </a>
+    )}
+  </div>
+</article>
+
+<style>
+  .destacado {
+    margin-bottom: 20px;
+    padding: clamp(20px, 3vw, 32px);
+    border-radius: var(--radio-lg);
+    background: var(--color-superficie);
+    border: 1px solid #6b4a26;
+    box-shadow: 0 0 40px rgba(224, 164, 88, 0.12);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: clamp(20px, 4vw, 40px);
+  }
+
+  .destacado[hidden] {
+    display: none;
+  }
+
+  .destacado__insignia {
+    width: clamp(128px, 20vw, 168px);
+    height: auto;
+    flex-shrink: 0;
+  }
+
+  .destacado__info {
+    flex: 1 1 320px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .destacado__eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #e0a458;
+  }
+
+  .destacado__titulo {
+    font-size: clamp(26px, 4vw, 34px);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+
+  .destacado__datos {
+    margin: 4px 0 8px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 14px 24px;
+  }
+
+  .destacado__datos div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .destacado__datos dt {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--color-texto-suave);
+  }
+
+  .destacado__datos dd {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--color-texto);
+  }
+
+  .destacado__cta {
+    align-self: flex-start;
+  }
+</style>

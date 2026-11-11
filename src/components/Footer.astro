@@ -23,8 +23,6 @@ const enlaces = [
       </nav>
     </div>
 
-    <div class="franja footer__franja" aria-hidden="true"><span></span><span></span><span></span></div>
-
     <p class="footer__aviso">
       Sitio de fans no oficial. Star Wars: Unlimited y los elementos relacionados son propiedad de
       Lucasfilm Ltd. y Fantasy Flight Games. SWU Colombia no está afiliado ni respaldado por ellos.
@@ -35,8 +33,9 @@ const enlaces = [
 
 <style>
   .footer {
-    background: var(--color-marino);
-    color: var(--color-texto-claro);
+    background: var(--color-fondo-pie);
+    color: var(--color-texto-suave);
+    border-top: 1px solid #1c2642;
   }
 
   .footer__contenido {
@@ -76,7 +75,7 @@ const enlaces = [
   }
 
   .footer__nav a {
-    color: var(--color-texto-claro);
+    color: var(--color-texto-suave);
     text-decoration: none;
     font-size: 14px;
     padding: 12px;
@@ -85,18 +84,6 @@ const enlaces = [
   .footer__nav a:hover {
     color: var(--color-blanco);
     text-decoration: underline;
-  }
-
-  .footer__franja {
-    height: 3px;
-    max-width: 160px;
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  /* azul más claro para que se vea sobre el fondo marino */
-  .footer__franja span:nth-child(2) {
-    background: #3d6fd1;
   }
 
   .footer__aviso {

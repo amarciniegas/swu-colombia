@@ -18,16 +18,20 @@ const fechaLarga = fecha.toLocaleDateString('es-CO', {
   month: 'long',
   timeZone: 'UTC',
 });
+// Torneos y Premier en rojo (competitivo); casual y semanal en azul.
+const competitivo = ['Torneo', 'Premier', 'Planetary Qualifier'].includes(evento.tipo);
 ---
 
-<article class="evento" data-ciudad={evento.ciudad}>
+<article class="evento tarjeta evento-filtrable" data-ciudad={evento.ciudad}>
   <time class="evento__fecha" datetime={evento.fecha}>
-    <span class="evento__dia">{dia}</span>
-    <span class="evento__mes">{mes}</span>
+    <span class="evento__dia" aria-hidden="true">{dia}</span>
+    <span class="evento__mes" aria-hidden="true">{mes}</span>
     <span class="solo-lectores">{fechaLarga}</span>
   </time>
   <div class="evento__info">
-    <p class="etiqueta">{evento.ciudad} · {evento.tipo}</p>
+    <p class:list={['etiqueta', { 'etiqueta--villano': competitivo }]}>
+      {evento.ciudad} · {evento.tipo}
+    </p>
     <h3 class="evento__titulo">{evento.titulo}</h3>
     <p class="evento__lugar">{evento.tienda} · {evento.hora}</p>
   </div>
@@ -35,12 +39,9 @@ const fechaLarga = fecha.toLocaleDateString('es-CO', {
 
 <style>
   .evento {
-    border: 1px solid var(--color-borde);
-    border-radius: var(--radio-md);
     padding: 20px;
     display: flex;
     gap: 18px;
-    background: var(--color-blanco);
   }
 
   .evento[hidden] {
@@ -52,7 +53,7 @@ const fechaLarga = fecha.toLocaleDateString('es-CO', {
     height: 72px;
     flex-shrink: 0;
     border-radius: 12px;
-    background: var(--color-fondo-suave);
+    background: var(--color-superficie-2);
     display: flex;
     flex-direction: column;
     align-items: center;

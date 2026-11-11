@@ -14,11 +14,11 @@ const { titulo, descripcion } = Astro.props;
 <BaseLayout titulo={titulo} descripcion={descripcion}>
   <section class="seccion">
     <div class="contenedor proximamente">
-      <Estrella tamano={64} />
+      <Estrella tamano={64} color="#ffffff" />
       <h1 class="proximamente__titulo">{titulo}</h1>
       <p class="proximamente__texto">{descripcion}</p>
       <p class="proximamente__texto">Esta sección está en construcción. ¡Muy pronto!</p>
-      <a href="/" class="boton boton--marino">Volver al inicio</a>
+      <a href="/" class="boton boton--amarillo">Volver al inicio</a>
     </div>
   </section>
 </BaseLayout>
