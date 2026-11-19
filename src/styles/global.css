@@ -162,6 +162,23 @@ a:hover {
   border-radius: var(--radio-md);
 }
 
+/* Franja de la bandera de Colombia (amarillo 2 : azul 1 : rojo 1) */
+.franja {
+  display: flex;
+  height: 4px;
+}
+
+.franja span:nth-child(1) { flex: 2; background: var(--color-amarillo); }
+.franja span:nth-child(2) { flex: 1; background: #2456c7; } /* azul más claro para verse sobre fondo oscuro */
+.franja span:nth-child(3) { flex: 1; background: #ce1126; }
+
+.franja--corta {
+  height: 3px;
+  max-width: 160px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
 /* Línea mitad azul, mitad roja (el choque de los dos lados) */
 .linea-duelo {
   display: flex;
