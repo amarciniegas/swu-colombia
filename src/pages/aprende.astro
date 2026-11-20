@@ -1,8 +1,476 @@
 ---
-import Proximamente from '../components/Proximamente.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const mazo = [
+  { numero: '1', titulo: 'Líder', texto: 'Un personaje icónico que guía tu mazo. Empieza al lado de tu base y más adelante puede entrar a combatir.' },
+  { numero: '1', titulo: 'Base', texto: 'Lo que tienes que proteger. Si el daño en tu base llega a su vida máxima, pierdes.' },
+  { numero: '50+', titulo: 'Cartas', texto: 'Unidades, eventos y mejoras. Mínimo 50, sin contar líder ni base.' },
+  { numero: '3', titulo: 'Copias', texto: 'Máximo 3 copias de cada carta en tu mazo.' },
+];
+
+const ronda = [
+  {
+    fase: 'Fase de acción',
+    texto:
+      'Los jugadores se turnan haciendo una acción a la vez: jugar una carta, atacar con una unidad o usar una habilidad. Quien tiene la iniciativa empieza. Cuando ambos pasan, termina la fase.',
+  },
+  {
+    fase: 'Fase de reagrupación',
+    texto:
+      'Cada jugador roba 2 cartas, puede poner 1 carta de su mano como recurso nuevo y prepara (endereza) todas sus cartas para la siguiente ronda.',
+  },
+];
+
+const aspectos = [
+  { nombre: 'Heroísmo', clase: 'heroe' },
+  { nombre: 'Villanía', clase: 'villano' },
+  { nombre: 'Vigilancia', clase: 'neutro' },
+  { nombre: 'Mando', clase: 'neutro' },
+  { nombre: 'Agresión', clase: 'neutro' },
+  { nombre: 'Astucia', clase: 'neutro' },
+];
+
+const formatos = [
+  {
+    nombre: 'Premier',
+    detalle: 'El formato principal',
+    texto: 'Mazos de 50 cartas con 1 líder y 1 base, usando las expansiones vigentes. Es el que se juega en el weekly y en la mayoría de torneos.',
+  },
+  {
+    nombre: 'Twin Suns',
+    detalle: 'Multijugador',
+    texto: 'Varios jugadores en la misma mesa. Cada uno usa 2 líderes, 1 base y un mazo de 80 cartas sin repetir ninguna.',
+  },
+  {
+    nombre: 'Limitado',
+    detalle: 'Draft y Sellado',
+    texto: 'Armas tu mazo en el momento con sobres que abres en el evento. Mazo mínimo de 30 cartas. Ideal en prereleases.',
+  },
+];
 ---
 
-<Proximamente
+<BaseLayout
   titulo="Aprende a jugar"
-  descripcion="Guía para principiantes, cómo armar tu primer mazo y glosario."
-/>
+  descripcion="Guía para principiantes de Star Wars: Unlimited: cómo armar un mazo, cómo funciona una ronda, los aspectos y los formatos."
+>
+  <section class="cabecera">
+    <div class="contenedor">
+      <p class="cabecera__eyebrow">Guía para principiantes</p>
+      <h1 class="cabecera__titulo">Aprende a jugar</h1>
+      <p class="cabecera__sub">
+        Lo básico de Star Wars: Unlimited en cinco minutos: tu mazo, una ronda, los aspectos y
+        los formatos. El resto se aprende jugando, y en la comunidad siempre hay alguien dispuesto
+        a enseñarte.
+      </p>
+    </div>
+  </section>
+
+  <div class="linea-duelo" aria-hidden="true"><span></span><span></span></div>
+
+  <!-- Objetivo -->
+  <section class="seccion">
+    <div class="contenedor objetivo">
+      <p class="paso">01</p>
+      <h2 class="seccion__titulo">El objetivo</h2>
+      <p class="texto-grande">
+        Cada jugador tiene una <strong>base</strong>. Gana quien destruya primero la base de su
+        oponente, atacándola con unidades en tierra y en el espacio.
+      </p>
+    </div>
+  </section>
+
+  <!-- Mazo -->
+  <section class="seccion seccion--alterna">
+    <div class="contenedor">
+      <p class="paso">02</p>
+      <h2 class="seccion__titulo">Tu mazo</h2>
+      <ul class="grilla mazo" role="list">
+        {mazo.map((m) => (
+          <li class="mazo__item tarjeta">
+            <span class="mazo__numero">{m.numero}</span>
+            <h3 class="mazo__titulo">{m.titulo}</h3>
+            <p class="mazo__texto">{m.texto}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Recursos -->
+  <section class="seccion">
+    <div class="contenedor">
+      <p class="paso">03</p>
+      <h2 class="seccion__titulo">Recursos: tu energía</h2>
+      <div class="dos-columnas">
+        <p class="texto-grande">
+          Para jugar cartas pagas con <strong>recursos</strong>: cartas de tu mano que pones boca
+          abajo. Al comenzar eliges 2 de tu mano inicial, y después puedes sumar 1 por ronda.
+        </p>
+        <p class="texto">
+          Cada recurso solo se usa una vez por ronda. Decidir qué carta guardar como recurso y cuál
+          jugar es una de las decisiones más importantes del juego. Cuando tienes suficientes
+          recursos, tu líder puede <strong>desplegarse</strong> y entrar al combate como una unidad.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ronda -->
+  <section class="seccion seccion--alterna">
+    <div class="contenedor">
+      <p class="paso">04</p>
+      <h2 class="seccion__titulo">Cómo funciona una ronda</h2>
+      <ol class="ronda" role="list">
+        {ronda.map((r, i) => (
+          <li class="ronda__fase tarjeta">
+            <span class="ronda__numero" aria-hidden="true">{i + 1}</span>
+            <div>
+              <h3 class="ronda__titulo">{r.fase}</h3>
+              <p class="ronda__texto">{r.texto}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <p class="texto nota-ronda">
+        Las unidades que atacan se agotan (se giran de lado) y no pueden volver a atacar hasta la
+        siguiente ronda. Las unidades de tierra pelean en tierra y las espaciales en el espacio,
+        pero todas pueden atacar la base.
+      </p>
+    </div>
+  </section>
+
+  <!-- Aspectos -->
+  <section class="seccion">
+    <div class="contenedor">
+      <p class="paso">05</p>
+      <h2 class="seccion__titulo">Aspectos: elige tu lado</h2>
+      <div class="dos-columnas">
+        <div>
+          <p class="texto-grande">
+            Cada carta tiene uno o más <strong>aspectos</strong>. Tu líder y tu base definen
+            cuáles puedes jugar sin penalidad.
+          </p>
+          <p class="texto">
+            Puedes incluir cartas de cualquier aspecto, pero cada aspecto que no tengan tu líder
+            ni tu base te cuesta <strong>2 recursos extra</strong>. Por eso la mayoría de los mazos
+            se arman alrededor de los aspectos del líder y la base.
+          </p>
+        </div>
+        <ul class="aspectos" role="list" aria-label="Los seis aspectos">
+          {aspectos.map((a) => (
+            <li class:list={['aspecto', `aspecto--${a.clase}`]}>{a.nombre}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Formatos -->
+  <section class="seccion seccion--alterna">
+    <div class="contenedor">
+      <p class="paso">06</p>
+      <h2 class="seccion__titulo">Formatos</h2>
+      <ul class="grilla lista-limpia" role="list">
+        {formatos.map((f) => (
+          <li class="formato tarjeta">
+            <p class="etiqueta">{f.detalle}</p>
+            <h3 class="formato__nombre">{f.nombre}</h3>
+            <p class="formato__texto">{f.texto}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Siguiente paso -->
+  <section class="seccion">
+    <div class="contenedor">
+      <div class="siguiente tarjeta">
+        <div class="linea-duelo" aria-hidden="true"><span></span><span></span></div>
+        <div class="siguiente__fila">
+          <div class="siguiente__texto">
+            <h2 class="siguiente__titulo">¿Listo para tu primera partida?</h2>
+            <p>
+              Ve al juego semanal de tu ciudad: siempre hay alguien con un mazo para prestarte y
+              ganas de enseñarte. También puedes practicar gratis online en Karabast.
+            </p>
+            <p class="fuente">
+              Esta guía es un resumen. Las reglas completas están en el{' '}
+              <a href="https://starwarsunlimited.com" target="_blank" rel="noopener noreferrer">sitio oficial<span class="solo-lectores"> (abre en otra pestaña)</span></a>.
+            </p>
+          </div>
+          <div class="siguiente__botones">
+            <a href="/eventos" class="boton boton--amarillo">Encontrar el juego semanal</a>
+            <a href="/herramientas" class="boton boton--borde">Ver herramientas</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .cabecera {
+    padding-block: 56px 48px;
+  }
+
+  .cabecera__eyebrow {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--color-amarillo);
+    margin-bottom: 12px;
+  }
+
+  .cabecera__titulo {
+    font-size: clamp(40px, 7vw, 64px);
+    font-weight: 800;
+    letter-spacing: -2px;
+  }
+
+  .cabecera__sub {
+    margin-top: 12px;
+    max-width: 680px;
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--color-texto-suave);
+  }
+
+  .paso {
+    font-family: var(--font-titulos);
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--color-amarillo);
+    margin-bottom: 8px;
+  }
+
+  .seccion .seccion__titulo {
+    margin-bottom: 24px;
+  }
+
+  .texto-grande {
+    font-size: clamp(18px, 2.4vw, 22px);
+    line-height: 1.6;
+    max-width: 760px;
+  }
+
+  .texto {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--color-texto-suave);
+    max-width: 680px;
+  }
+
+  .texto-grande strong,
+  .texto strong {
+    color: var(--color-blanco);
+  }
+
+  .dos-columnas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px 48px;
+  }
+
+  .dos-columnas > * {
+    flex: 1 1 360px;
+  }
+
+  .dos-columnas > div {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Mazo */
+  .mazo {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  .mazo__item {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .mazo__numero {
+    font-family: var(--font-titulos);
+    font-size: 44px;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--color-heroe-texto);
+  }
+
+  .mazo__titulo {
+    font-size: 20px;
+    font-weight: 800;
+  }
+
+  .mazo__texto {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--color-texto-suave);
+  }
+
+  /* Ronda */
+  .ronda {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .ronda__fase {
+    padding: 24px;
+    display: flex;
+    gap: 18px;
+  }
+
+  .ronda__numero {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--color-amarillo);
+    color: var(--color-fondo);
+    font-family: var(--font-titulos);
+    font-size: 20px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ronda__titulo {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+
+  .ronda__texto {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--color-texto-suave);
+  }
+
+  .nota-ronda {
+    margin-top: 24px;
+  }
+
+  /* Aspectos */
+  .aspectos {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    align-content: start;
+  }
+
+  .aspecto {
+    padding: 14px 18px;
+    border-radius: var(--radio-sm);
+    border: 1px solid var(--color-borde);
+    background: var(--color-superficie);
+    font-family: var(--font-titulos);
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .aspecto--heroe {
+    border-color: #1e3566;
+    background: #0b1730;
+    color: var(--color-heroe-texto);
+    box-shadow: 0 0 24px rgba(77, 163, 255, 0.12);
+  }
+
+  .aspecto--villano {
+    border-color: #5a1a26;
+    background: #1f0a10;
+    color: var(--color-villano-texto);
+    box-shadow: 0 0 24px rgba(229, 51, 63, 0.12);
+  }
+
+  .lista-limpia {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Formatos */
+  .formato {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .formato__nombre {
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  .formato__texto {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--color-texto-suave);
+  }
+
+  /* Siguiente paso */
+  .siguiente {
+    border-radius: var(--radio-lg);
+    overflow: hidden;
+  }
+
+  .siguiente .linea-duelo {
+    height: 3px;
+  }
+
+  .siguiente .linea-duelo span {
+    box-shadow: none;
+  }
+
+  .siguiente__fila {
+    padding: clamp(24px, 4vw, 40px);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+  }
+
+  .siguiente__texto {
+    flex: 999 1 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: var(--color-texto-suave);
+    line-height: 1.6;
+  }
+
+  .siguiente__titulo {
+    font-size: clamp(24px, 4vw, 30px);
+    font-weight: 800;
+    color: var(--color-texto);
+  }
+
+  .fuente {
+    font-size: 14px;
+  }
+
+  .siguiente__botones {
+    flex: 1 1 260px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+</style>

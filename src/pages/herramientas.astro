@@ -1,8 +1,288 @@
 ---
-import Proximamente from '../components/Proximamente.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+interface Herramienta {
+  nombre: string;
+  url: string;
+  dominio: string;
+  descripcion: string;
+  usos: string[];
+  icono: 'cartas' | 'jugar' | 'oficial' | 'torneo' | 'coleccion';
+  lado: 'heroe' | 'villano';
+}
+
+const herramientas: Herramienta[] = [
+  {
+    nombre: 'SWUDB',
+    url: 'https://swudb.com',
+    dominio: 'swudb.com',
+    descripcion:
+      'La base de datos de cartas y creador de mazos más usado por la comunidad. Funciona desde el navegador, también en el celular.',
+    usos: ['Buscar cualquier carta', 'Armar y compartir tu mazo', 'Ver mazos de otros jugadores'],
+    icono: 'cartas',
+    lado: 'heroe',
+  },
+  {
+    nombre: 'Karabast',
+    url: 'https://karabast.net',
+    dominio: 'karabast.net',
+    descripcion:
+      'Simulador gratuito hecho por la comunidad para jugar online desde el navegador, sin descargar nada. Puedes importar el mazo que armaste en SWUDB.',
+    usos: ['Probar un mazo antes de comprar cartas', 'Practicar antes de un torneo', 'Jugar con amigos de otras ciudades'],
+    icono: 'jugar',
+    lado: 'villano',
+  },
+  {
+    nombre: 'Sitio oficial',
+    url: 'https://starwarsunlimited.com',
+    dominio: 'starwarsunlimited.com',
+    descripcion:
+      'La página oficial del juego: reglas, noticias de nuevas expansiones y el programa de juego organizado.',
+    usos: ['Reglas oficiales', 'Calendario de juego organizado', 'Anuncios de expansiones'],
+    icono: 'oficial',
+    lado: 'heroe',
+  },
+  {
+    nombre: 'SW-Unlimited-DB',
+    url: 'https://sw-unlimited-db.com',
+    dominio: 'sw-unlimited-db.com',
+    descripcion:
+      'Otra base de datos de cartas con creador de mazos, seguimiento de tu colección y referencia de precios por carta.',
+    usos: ['Llevar la cuenta de tu colección', 'Consultar precios de referencia', 'Mazos de Twin Suns'],
+    icono: 'coleccion',
+    lado: 'villano',
+  },
+  {
+    nombre: 'Melee',
+    url: 'https://melee.gg',
+    dominio: 'melee.gg',
+    descripcion:
+      'Plataforma que usan muchas tiendas para organizar torneos: inscripción, emparejamientos y resultados por ronda.',
+    usos: ['Ver tus emparejamientos en el torneo', 'Consultar resultados', 'Registrar tu lista de mazo'],
+    icono: 'torneo',
+    lado: 'heroe',
+  },
+];
 ---
 
-<Proximamente
+<BaseLayout
   titulo="Herramientas"
-  descripcion="Base de datos de cartas, creadores de mazos y juego online."
-/>
+  descripcion="Las mejores herramientas para jugadores de Star Wars: Unlimited: base de datos de cartas, creador de mazos y juego online."
+>
+  <section class="cabecera">
+    <div class="contenedor">
+      <h1 class="cabecera__titulo">Herramientas</h1>
+      <p class="cabecera__sub">
+        Busca cartas, arma tu mazo y practica online. Estas son las herramientas que más usa la
+        comunidad.
+      </p>
+    </div>
+  </section>
+
+  <div class="linea-duelo" aria-hidden="true"><span></span><span></span></div>
+
+  <section class="seccion">
+    <div class="contenedor">
+      <ul class="herramientas" role="list">
+        {herramientas.map((h) => (
+          <li class:list={['herramienta', 'tarjeta', `herramienta--${h.lado}`]}>
+            <div class="herramienta__icono" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                {h.icono === 'cartas' && (<><rect x="3" y="4" width="12" height="16" rx="2" /><path d="M17 6l3 1-3 13-3-1" /></>)}
+                {h.icono === 'jugar' && (<><rect x="2" y="6" width="20" height="12" rx="4" /><path d="M7 12h4M9 10v4" /><circle cx="16" cy="11" r="1" /><circle cx="18" cy="13" r="1" /></>)}
+                {h.icono === 'oficial' && (<><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" /></>)}
+                {h.icono === 'coleccion' && (<><path d="M4 7h16M4 12h16M4 17h10" /><path d="M18 15l2 2 3-4" /></>)}
+                {h.icono === 'torneo' && (<><path d="M8 4h8v5a4 4 0 0 1-8 0V4z" /><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 21h8" /></>)}
+              </svg>
+            </div>
+            <h2 class="herramienta__nombre">{h.nombre}</h2>
+            <p class="herramienta__dominio">{h.dominio}</p>
+            <p class="herramienta__texto">{h.descripcion}</p>
+            <ul class="herramienta__usos">
+              {h.usos.map((u) => <li>{u}</li>)}
+            </ul>
+            <a href={h.url} class="boton boton--borde herramienta__boton" target="_blank" rel="noopener noreferrer">
+              Abrir {h.nombre}<span class="solo-lectores"> (abre en otra pestaña)</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <p class="nota">
+        Estas herramientas son creadas por la comunidad o por el editor del juego. SWU Colombia no
+        está afiliado a ellas; solo las recomendamos porque las usamos.
+      </p>
+    </div>
+  </section>
+
+  <section class="seccion seccion--alterna">
+    <div class="contenedor">
+      <div class="consejo tarjeta">
+        <div class="linea-duelo" aria-hidden="true"><span></span><span></span></div>
+        <div class="consejo__fila">
+          <div class="consejo__texto">
+            <h2 class="consejo__titulo">Consejo: arma en SWUDB, prueba en Karabast</h2>
+            <p>
+              Arma tu lista en SWUDB, impórtala en Karabast y juega unas partidas antes de comprar
+              las cartas que te faltan. Cuando te guste, tráela al juego semanal de tu ciudad.
+            </p>
+          </div>
+          <div class="consejo__botones">
+            <a href="/eventos" class="boton boton--amarillo">Ver juego semanal</a>
+            <a href="/aprende" class="boton boton--borde">Aprende a jugar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .cabecera {
+    padding-block: 56px 48px;
+  }
+
+  .cabecera__titulo {
+    font-size: clamp(40px, 7vw, 64px);
+    font-weight: 800;
+    letter-spacing: -2px;
+  }
+
+  .cabecera__sub {
+    margin-top: 12px;
+    max-width: 640px;
+    font-size: 18px;
+    color: var(--color-texto-suave);
+  }
+
+  .herramientas {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .herramienta {
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .herramienta--heroe {
+    --acento: var(--color-heroe);
+    --acento-texto: var(--color-heroe-texto);
+    --brillo: rgba(77, 163, 255, 0.15);
+  }
+
+  .herramienta--villano {
+    --acento: var(--color-villano);
+    --acento-texto: var(--color-villano-texto);
+    --brillo: rgba(229, 51, 63, 0.15);
+  }
+
+  .herramienta:hover,
+  .herramienta:focus-within {
+    border-color: var(--acento);
+    box-shadow: 0 0 40px var(--brillo);
+  }
+
+  .herramienta__icono {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: var(--color-superficie-2);
+    color: var(--acento-texto);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6px;
+  }
+
+  .herramienta__nombre {
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  .herramienta__dominio {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--acento-texto);
+  }
+
+  .herramienta__texto {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--color-texto-suave);
+  }
+
+  .herramienta__usos {
+    margin: 4px 0 8px;
+    padding-left: 18px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #c3cbdc;
+    flex-grow: 1;
+  }
+
+  .herramienta__usos li::marker {
+    color: var(--acento);
+  }
+
+  .herramienta__boton {
+    align-self: flex-start;
+  }
+
+  .nota {
+    margin-top: 28px;
+    font-size: 13px;
+    color: var(--color-texto-suave);
+  }
+
+  .consejo {
+    border-radius: var(--radio-lg);
+    overflow: hidden;
+  }
+
+  .consejo .linea-duelo {
+    height: 3px;
+  }
+
+  .consejo .linea-duelo span {
+    box-shadow: none;
+  }
+
+  .consejo__fila {
+    padding: clamp(24px, 4vw, 40px);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+  }
+
+  .consejo__texto {
+    flex: 999 1 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: var(--color-texto-suave);
+    line-height: 1.6;
+  }
+
+  .consejo__titulo {
+    font-size: clamp(24px, 4vw, 30px);
+    font-weight: 800;
+    color: var(--color-texto);
+  }
+
+  .consejo__botones {
+    flex: 1 1 260px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+</style>
