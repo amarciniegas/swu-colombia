@@ -19,7 +19,9 @@ const enlaces = [
         <span>SWU Colombia</span>
       </a>
       <nav aria-label="Pie de página" class="footer__nav">
-        {enlaces.map((e) => <a href={e.href}>{e.texto}</a>)}
+        {enlaces.map((e) => (
+          <a href={e.href} data-nave={e.href === '/eventos' ? '' : undefined}>{e.texto}</a>
+        ))}
       </nav>
     </div>
 

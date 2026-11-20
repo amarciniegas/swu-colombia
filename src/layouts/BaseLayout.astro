@@ -6,6 +6,8 @@ import '../styles/eventos.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import CarruselTiendas from '../components/CarruselTiendas.astro';
+import FondoEstrellas from '../components/FondoEstrellas.astro';
+import NaveEventos from '../components/NaveEventos.astro';
 import { sitio, redes } from '../data/sitio';
 import { usarCalendario, apiKey, calendariosActivos } from '../data/calendarios';
 
@@ -38,6 +40,7 @@ const configCalendario = JSON.stringify({ apiKey, calendarios: calendariosActivo
     <meta property="og:locale" content="es_CO" />
   </head>
   <body>
+    <FondoEstrellas />
     <a href="#contenido" class="saltar">Saltar al contenido</a>
     <Header />
     <main id="contenido">
@@ -45,6 +48,7 @@ const configCalendario = JSON.stringify({ apiKey, calendarios: calendariosActivo
     </main>
     <CarruselTiendas />
     <Footer />
+    <NaveEventos />
     {usarCalendario && (
       <script
         is:inline

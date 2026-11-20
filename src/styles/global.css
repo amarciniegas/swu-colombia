@@ -110,7 +110,8 @@ a:hover {
 }
 
 .seccion--alterna {
-  background: var(--color-fondo-2);
+  /* translúcido para que se vean las estrellas del fondo */
+  background: rgba(10, 16, 31, 0.55);
 }
 
 .seccion__cabecera {

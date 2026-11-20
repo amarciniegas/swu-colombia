@@ -40,24 +40,11 @@ const comunidad = [
   { nombre: 'Instagram', texto: 'Fotos de torneos, ganadores y novedades.', accion: 'Seguir', href: redes.instagram, icono: 'camara' },
 ];
 
-// Estrellas de fondo de la portada: [x %, y %, radio, opacidad]
-const estrellas = [
-  [6, 14, 1.2, 0.6], [14, 42, 0.8, 0.4], [22, 8, 1, 0.5], [31, 30, 0.7, 0.35],
-  [38, 12, 1.3, 0.55], [47, 22, 0.8, 0.4], [56, 6, 1, 0.5], [63, 34, 0.7, 0.35],
-  [71, 16, 1.2, 0.6], [79, 40, 0.8, 0.4], [86, 10, 1, 0.5], [94, 28, 1.3, 0.55],
-  [9, 70, 0.8, 0.35], [91, 76, 0.8, 0.35], [50, 88, 1, 0.4],
-];
 ---
 
 <BaseLayout>
   <!-- Portada -->
   <section class="hero">
-    <svg class="hero__estrellas" width="100%" height="100%" aria-hidden="true">
-      {estrellas.map(([x, y, r, o]) => (
-        <circle cx={`${x}%`} cy={`${y}%`} r={r} fill="#ffffff" opacity={o} />
-      ))}
-    </svg>
-
     <div class="contenedor hero__contenido">
       <div class="hero__marca">
         <p class="hero__eyebrow">Comunidad de jugadores en Colombia de</p>
@@ -75,7 +62,7 @@ const estrellas = [
         Torneos en tu ciudad, noticias del metajuego y todo lo que necesitas para empezar a jugar.
       </p>
       <div class="hero__botones">
-        <a href="#eventos" class="boton boton--amarillo">Ver próximos eventos</a>
+        <a href="#eventos" class="boton boton--amarillo" data-nave>Ver próximos eventos</a>
         <a href="/aprende" class="boton boton--borde">Soy nuevo, ¿cómo empiezo?</a>
       </div>
 
@@ -120,7 +107,7 @@ const estrellas = [
     <div class="contenedor">
       <div class="seccion__cabecera">
         <h2 class="seccion__titulo">Próximos eventos</h2>
-        <a href="/eventos" class="enlace-flecha">Ver calendario completo →</a>
+        <a href="/eventos" class="enlace-flecha" data-nave>Ver calendario completo →</a>
       </div>
 
       <div class="filtros" role="group" aria-label="Filtrar eventos por ciudad">
@@ -230,13 +217,6 @@ const estrellas = [
   /* ---------- Portada ---------- */
   .hero {
     position: relative;
-    overflow: hidden;
-    background: var(--color-fondo);
-  }
-
-  .hero__estrellas {
-    position: absolute;
-    inset: 0;
   }
 
   .hero__contenido {

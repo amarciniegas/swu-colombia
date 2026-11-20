@@ -1,0 +1,125 @@
+---
+// Nave original de SWU Colombia que cruza la pantalla al hacer clic en un enlace con
+// el atributo data-nave (por ejemplo "Eventos" en el menú). Después abre el enlace.
+// Con "reducir movimiento" activado, el enlace se abre de inmediato, sin animación.
+---
+
+<div class="nave" aria-hidden="true">
+  <span class="nave__estela"></span>
+  <svg class="nave__svg" width="120" height="60" viewBox="0 0 120 60">
+    <defs>
+      <linearGradient id="nave-casco" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#f2f5fb" />
+        <stop offset="1" stop-color="#8a96b4" />
+      </linearGradient>
+      <radialGradient id="nave-motor" cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0" stop-color="#ffffff" />
+        <stop offset="0.4" stop-color="#a6d0ff" />
+        <stop offset="1" stop-color="#4da3ff" stop-opacity="0" />
+      </radialGradient>
+    </defs>
+    <!-- llama del motor -->
+    <ellipse class="nave__llama" cx="16" cy="30" rx="16" ry="7" fill="url(#nave-motor)" />
+    <!-- alas en flecha -->
+    <path d="M44 27 L30 4 L40 4 L66 26 Z" fill="#5b6785" />
+    <path d="M44 33 L30 56 L40 56 L66 34 Z" fill="#5b6785" />
+    <!-- franja amarilla en las alas -->
+    <path d="M34 8 L39 8 L52 22 L48 22 Z" fill="#ffcd00" />
+    <path d="M34 52 L39 52 L52 38 L48 38 Z" fill="#ffcd00" />
+    <!-- fuselaje -->
+    <path d="M22 24 L84 22 L116 30 L84 38 L22 36 Z" fill="url(#nave-casco)" />
+    <!-- cabina -->
+    <path d="M78 26 L98 30 L78 34 Z" fill="#16203a" />
+    <path d="M80 27.5 L90 30 L80 30 Z" fill="#6fb4ff" opacity="0.7" />
+    <!-- tobera -->
+    <rect x="20" y="25" width="6" height="10" rx="2" fill="#3a4258" />
+  </svg>
+</div>
+
+<style>
+  .nave {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+
+  .nave__svg {
+    position: relative;
+    display: block;
+    filter: drop-shadow(0 0 10px rgba(77, 163, 255, 0.45));
+  }
+
+  .nave__estela {
+    position: absolute;
+    top: 50%;
+    right: 100px;
+    width: 220px;
+    height: 3px;
+    margin-top: -1.5px;
+    border-radius: 2px;
+    background: linear-gradient(to left, rgba(166, 208, 255, 0.85), rgba(77, 163, 255, 0));
+  }
+
+  .nave__llama {
+    transform-origin: 26px 30px;
+    animation: llama 0.12s ease-in-out infinite alternate;
+  }
+
+  @keyframes llama {
+    from { transform: scaleX(0.8); opacity: 0.85; }
+    to { transform: scaleX(1.15); opacity: 1; }
+  }
+</style>
+
+<script>
+  const nave = document.querySelector<HTMLElement>('.nave');
+  const reducir = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let volando = false;
+
+  function volar(): Animation | null {
+    if (!nave || reducir.matches || volando) return null;
+    volando = true;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    // Entra por abajo a la izquierda y sale por arriba a la derecha, con una leve curva.
+    const angulo = -Math.atan2(h * 0.75, w * 1.3) * (180 / Math.PI);
+    const anim = nave.animate(
+      [
+        { transform: `translate(${-160}px, ${h * 0.85}px) rotate(${angulo}deg) scale(0.55)`, opacity: 0 },
+        { opacity: 1, offset: 0.12 },
+        { transform: `translate(${w * 0.45}px, ${h * 0.42}px) rotate(${angulo * 0.85}deg) scale(0.9)`, offset: 0.55 },
+        { opacity: 1, offset: 0.88 },
+        { transform: `translate(${w + 160}px, ${h * 0.05}px) rotate(${angulo * 0.7}deg) scale(1.15)`, opacity: 0 },
+      ],
+      { duration: 1000, easing: 'cubic-bezier(0.45, 0, 0.25, 1)' },
+    );
+    anim.finished.finally(() => {
+      volando = false;
+    });
+    return anim;
+  }
+
+  document.addEventListener('click', (evento) => {
+    const enlace = (evento.target as Element | null)?.closest<HTMLAnchorElement>('a[data-nave]');
+    if (!enlace) return;
+    // Respetar Ctrl/Cmd/Shift + clic (abrir en otra pestaña) y clic del medio.
+    if (evento.defaultPrevented || evento.button !== 0 || evento.metaKey || evento.ctrlKey || evento.shiftKey || evento.altKey) return;
+    if (enlace.target === '_blank') return;
+
+    const anim = volar();
+    if (!anim) return; // sin animación: el enlace funciona normal
+
+    const destino = new URL(enlace.href, location.href);
+    const mismaPagina = destino.pathname === location.pathname && destino.hash;
+    if (mismaPagina) return; // enlaces como #eventos: la nave vuela mientras la página se desplaza
+
+    evento.preventDefault();
+    window.setTimeout(() => {
+      location.href = destino.href;
+    }, 700);
+  });
+</script>
