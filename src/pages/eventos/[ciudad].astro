@@ -1,0 +1,188 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EventoDestacado from '../../components/EventoDestacado.astro';
+import TarjetaEvento from '../../components/TarjetaEvento.astro';
+import TarjetaSemanal from '../../components/TarjetaSemanal.astro';
+import TarjetaTienda from '../../components/TarjetaTienda.astro';
+import { ciudades, redes } from '../../data/sitio';
+import { eventosFuturos } from '../../data/eventos';
+import { juegoSemanal } from '../../data/semanal';
+import { tiendas } from '../../data/tiendas';
+import { slug, hoyColombia } from '../../utils';
+import { calendarioDe, enlaceGoogle, enlaceIcal } from '../../data/calendarios';
+
+export function getStaticPaths() {
+  return ciudades.map((ciudad) => ({ params: { ciudad: slug(ciudad) }, props: { ciudad } }));
+}
+
+const { ciudad } = Astro.props;
+
+const futuros = eventosFuturos(hoyColombia()).filter((e) => e.ciudad === ciudad);
+const destacados = futuros.filter((e) => e.destacado);
+const otros = futuros.filter((e) => !e.destacado);
+const semanal = juegoSemanal.filter((j) => j.ciudad === ciudad);
+const tiendasCiudad = tiendas.filter((t) => t.ciudad === ciudad && t.direccion);
+const calendario = calendarioDe(ciudad);
+const sinNada = !calendario && futuros.length === 0 && semanal.length === 0 && tiendasCiudad.length === 0;
+const vacioEspeciales = `No hay torneos especiales programados en ${ciudad} por ahora.`;
+---
+
+<BaseLayout
+  titulo={`Eventos en ${ciudad}`}
+  descripcion={`Juego semanal, torneos y tiendas de Star Wars: Unlimited en ${ciudad}.`}
+>
+  <section class="cabecera">
+    <div class="contenedor">
+      <nav aria-label="Ruta" class="migas">
+        <a href="/eventos">Eventos</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{ciudad}</span>
+      </nav>
+      <h1 class="cabecera__titulo">{ciudad}</h1>
+      <p class="cabecera__sub">Dónde y cuándo se juega Star Wars: Unlimited en {ciudad}.</p>
+      {calendario && (
+        <div class="suscribir">
+          <a href={enlaceGoogle(calendario.id)} class="boton boton--borde" target="_blank" rel="noopener noreferrer">
+            Agregar a Google Calendar<span class="solo-lectores"> (abre en otra pestaña)</span>
+          </a>
+          <a href={enlaceIcal(calendario.id)} class="boton boton--borde">Apple / Outlook (iCal)</a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <div class="linea-duelo" aria-hidden="true"><span></span><span></span></div>
+
+  {(calendario || semanal.length > 0) && (
+    <section class="seccion">
+      <div class="contenedor">
+        <div class="seccion__cabecera">
+          <h2 class="seccion__titulo">Juego semanal</h2>
+        </div>
+        <div
+          data-cal-lista="semanal"
+          data-ciudad={ciudad}
+          data-vacio={`Todavía no hay juego semanal publicado en ${ciudad}.`}
+        >
+          {semanal.length > 0 && (
+            <div class="grilla">
+              {semanal.map((j) => <TarjetaSemanal juego={j} enlaceCiudad={false} />)}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="seccion seccion--alterna">
+    <div class="contenedor">
+      <div class="seccion__cabecera">
+        <h2 class="seccion__titulo">Próximos eventos especiales</h2>
+      </div>
+      <div data-cal-lista="especiales" data-ciudad={ciudad} data-vacio={vacioEspeciales}>
+        {destacados.map((e) => <EventoDestacado evento={e} />)}
+        {otros.length > 0 && (
+          <div class="grilla">
+            {otros.map((e) => <TarjetaEvento evento={e} />)}
+          </div>
+        )}
+        {futuros.length === 0 && <p class="vacio">{vacioEspeciales}</p>}
+      </div>
+    </div>
+  </section>
+
+  {tiendasCiudad.length > 0 && (
+    <section class="seccion">
+      <div class="contenedor">
+        <div class="seccion__cabecera">
+          <h2 class="seccion__titulo">Tiendas</h2>
+        </div>
+        <div class="grilla">
+          {tiendasCiudad.map((t) => <TarjetaTienda tienda={t} semanal={semanal} />)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class={`seccion ${tiendasCiudad.length > 0 ? 'seccion--alterna' : ''}`}>
+    <div class="contenedor">
+      <div class="unete tarjeta">
+        <div class="unete__texto">
+          <h2 class="unete__titulo">
+            {sinNada ? `¿Juegas en ${ciudad}?` : `Juega con nosotros en ${ciudad}`}
+          </h2>
+          <p>
+            {sinNada
+              ? `Estamos armando la comunidad en ${ciudad}. Únete al grupo y cuéntanos dónde juegas para agregar tu tienda.`
+              : 'Únete al grupo de WhatsApp para enterarte de cambios de horario, torneos y cupos.'}
+          </p>
+        </div>
+        {redes.whatsapp !== '#' && (
+          <a href={redes.whatsapp} class="boton boton--amarillo" target="_blank" rel="noopener noreferrer">
+            Unirme al grupo de WhatsApp<span class="solo-lectores"> (abre en otra pestaña)</span>
+          </a>
+        )}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .cabecera {
+    padding-block: 56px 48px;
+  }
+
+  .migas {
+    display: flex;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--color-texto-suave);
+    margin-bottom: 16px;
+  }
+
+  .migas a {
+    padding-block: 4px;
+  }
+
+  .cabecera__titulo {
+    font-size: clamp(40px, 7vw, 64px);
+    font-weight: 800;
+    letter-spacing: -2px;
+  }
+
+  .cabecera__sub {
+    margin-top: 12px;
+    font-size: 18px;
+    color: var(--color-texto-suave);
+  }
+
+  .suscribir {
+    margin-top: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .unete {
+    padding: clamp(24px, 4vw, 40px);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .unete__texto {
+    flex: 999 1 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: var(--color-texto-suave);
+  }
+
+  .unete__titulo {
+    font-size: clamp(24px, 4vw, 30px);
+    font-weight: 800;
+    color: var(--color-texto);
+  }
+</style>

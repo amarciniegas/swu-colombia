@@ -2,9 +2,11 @@
 import '@fontsource-variable/outfit';
 import '@fontsource-variable/inter';
 import '../styles/global.css';
+import '../styles/eventos.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { sitio } from '../data/sitio';
+import { sitio, redes } from '../data/sitio';
+import { usarCalendario, apiKey, calendariosActivos } from '../data/calendarios';
 
 interface Props {
   titulo?: string;
@@ -14,6 +16,7 @@ interface Props {
 const { titulo, descripcion = sitio.descripcion } = Astro.props;
 const tituloCompleto = titulo ? `${titulo} · ${sitio.nombre}` : `${sitio.nombre} · Comunidad de Star Wars: Unlimited`;
 const urlCanonica = new URL(Astro.url.pathname, Astro.site);
+const configCalendario = JSON.stringify({ apiKey, calendarios: calendariosActivos }).replace(/</g, '\\u003c');
 ---
 
 <!doctype html>
@@ -40,6 +43,18 @@ const urlCanonica = new URL(Astro.url.pathname, Astro.site);
       <slot />
     </main>
     <Footer />
+    {usarCalendario && (
+      <script
+        is:inline
+        type="application/json"
+        id="config-calendario"
+        data-whatsapp={redes.whatsapp !== '#' ? redes.whatsapp : undefined}
+        set:html={configCalendario}
+      />
+    )}
+    <script>
+      import '../scripts/calendario.ts';
+    </script>
   </body>
 </html>
 

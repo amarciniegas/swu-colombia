@@ -1,0 +1,172 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EventoDestacado from '../../components/EventoDestacado.astro';
+import TarjetaEvento from '../../components/TarjetaEvento.astro';
+import TarjetaSemanal from '../../components/TarjetaSemanal.astro';
+import { ciudades } from '../../data/sitio';
+import { eventosFuturos } from '../../data/eventos';
+import { juegoSemanal } from '../../data/semanal';
+import { slug, hoyColombia } from '../../utils';
+import { calendarioDe, usarCalendario } from '../../data/calendarios';
+
+const vacioEspeciales = 'No hay torneos especiales programados por ahora. Revisa el juego semanal de tu ciudad o pregunta en el grupo de WhatsApp.';
+
+const futuros = eventosFuturos(hoyColombia());
+const destacados = futuros.filter((e) => e.destacado);
+const otros = futuros.filter((e) => !e.destacado);
+
+const resumen = ciudades.map((ciudad) => {
+  const semanal = juegoSemanal.filter((j) => j.ciudad === ciudad);
+  const especiales = futuros.filter((e) => e.ciudad === ciudad).length;
+  let detalle = calendarioDe(ciudad) ? 'Ver calendario' : 'Comunidad en formación';
+  if (semanal.length > 0) {
+    const j = semanal[0];
+    detalle = `${j.nombre} los ${j.dia.toLowerCase()} · ${j.hora}`;
+  }
+  return { ciudad, detalle, especiales };
+});
+---
+
+<BaseLayout
+  titulo="Eventos"
+  descripcion="Calendario de torneos, juego semanal y tiendas de Star Wars: Unlimited en Colombia."
+>
+  <section class="cabecera">
+    <div class="contenedor">
+      <h1 class="cabecera__titulo">Eventos</h1>
+      <p class="cabecera__sub">
+        Juego semanal, torneos y Planetary Qualifiers de Star Wars: Unlimited en todo el país.
+      </p>
+    </div>
+  </section>
+
+  <div class="linea-duelo" aria-hidden="true"><span></span><span></span></div>
+
+  <section class="seccion">
+    <div class="contenedor">
+      <div class="seccion__cabecera">
+        <h2 class="seccion__titulo">Elige tu ciudad</h2>
+      </div>
+      <ul class="ciudades" role="list">
+        {resumen.map((c) => (
+          <li>
+            <a href={`/eventos/${slug(c.ciudad)}`} class="ciudad tarjeta">
+              <span class="ciudad__nombre">{c.ciudad}</span>
+              <span class="ciudad__detalle">{c.detalle}</span>
+              {c.especiales > 0 && (
+                <span class="ciudad__especiales">
+                  {c.especiales === 1 ? '1 evento especial' : `${c.especiales} eventos especiales`}
+                </span>
+              )}
+              <span class="ciudad__flecha" aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="seccion seccion--alterna">
+    <div class="contenedor">
+      <div class="seccion__cabecera">
+        <h2 class="seccion__titulo">Próximos eventos especiales</h2>
+      </div>
+      <div data-cal-lista="especiales" data-vacio={vacioEspeciales}>
+        {destacados.map((e) => <EventoDestacado evento={e} />)}
+        {otros.length > 0 && (
+          <div class="grilla">
+            {otros.map((e) => <TarjetaEvento evento={e} />)}
+          </div>
+        )}
+        {futuros.length === 0 && <p class="vacio">{vacioEspeciales}</p>}
+      </div>
+    </div>
+  </section>
+
+  {(usarCalendario || juegoSemanal.length > 0) && (
+    <section class="seccion">
+      <div class="contenedor">
+        <div class="seccion__cabecera">
+          <h2 class="seccion__titulo">Juego semanal</h2>
+        </div>
+        <div data-cal-lista="semanal" data-vacio="Todavía no hay juego semanal publicado.">
+          <div class="grilla">
+            {juegoSemanal.map((j) => <TarjetaSemanal juego={j} />)}
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  .cabecera {
+    padding-block: 56px 48px;
+  }
+
+  .cabecera__titulo {
+    font-size: clamp(40px, 7vw, 64px);
+    font-weight: 800;
+    letter-spacing: -2px;
+  }
+
+  .cabecera__sub {
+    margin-top: 12px;
+    max-width: 640px;
+    font-size: 18px;
+    color: var(--color-texto-suave);
+  }
+
+  .ciudades {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+
+  .ciudad {
+    position: relative;
+    height: 100%;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-decoration: none;
+    color: var(--color-texto);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .ciudad:hover {
+    color: var(--color-texto);
+    border-color: var(--color-heroe);
+    box-shadow: 0 0 32px rgba(77, 163, 255, 0.15);
+  }
+
+  .ciudad__nombre {
+    font-family: var(--font-titulos);
+    font-size: 24px;
+    font-weight: 800;
+  }
+
+  .ciudad__detalle {
+    font-size: 14px;
+    color: var(--color-texto-suave);
+  }
+
+  .ciudad__especiales {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-villano-texto);
+  }
+
+  .ciudad__flecha {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    font-size: 20px;
+    color: var(--color-heroe-texto);
+  }
+
+</style>

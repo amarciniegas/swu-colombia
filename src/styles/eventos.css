@@ -1,0 +1,203 @@
+/* Tarjetas de eventos: compartidas entre las páginas y las que se pintan desde Google Calendar */
+
+/* ---- TarjetaEvento.astro ---- */
+.evento {
+  padding: 20px;
+  display: flex;
+  gap: 18px;
+}
+
+.evento[hidden] {
+  display: none;
+}
+
+.evento__fecha {
+  width: 64px;
+  height: 72px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: var(--color-superficie-2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.evento__dia {
+  font-family: var(--font-titulos);
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.evento__mes {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-texto-suave);
+}
+
+.evento__info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.evento__titulo {
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.evento__lugar {
+  font-size: 14px;
+  color: var(--color-texto-suave);
+}
+
+/* ---- TarjetaSemanal.astro ---- */
+.semanal {
+  padding: 20px;
+  display: flex;
+  gap: 18px;
+}
+
+.semanal[hidden] {
+  display: none;
+}
+
+.semanal__dia {
+  width: 64px;
+  height: 72px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: var(--color-superficie-2);
+  color: var(--color-heroe-texto);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.semanal__dia span {
+  font-family: var(--font-titulos);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--color-texto);
+}
+
+.semanal__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.semanal__titulo {
+  font-size: 19px;
+  font-weight: 700;
+  margin-block: 2px;
+}
+
+.semanal__detalle {
+  font-size: 14px;
+  color: var(--color-texto-suave);
+}
+
+.semanal__enlace {
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  padding-block: 8px;
+}
+
+/* ---- EventoDestacado.astro ---- */
+.destacado {
+  margin-bottom: 20px;
+  padding: clamp(20px, 3vw, 32px);
+  border-radius: var(--radio-lg);
+  background: var(--color-superficie);
+  border: 1px solid #6b4a26;
+  box-shadow: 0 0 40px rgba(224, 164, 88, 0.12);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(20px, 4vw, 40px);
+}
+
+.destacado[hidden] {
+  display: none;
+}
+
+.destacado__insignia {
+  width: clamp(128px, 20vw, 168px);
+  height: auto;
+  flex-shrink: 0;
+}
+
+.destacado__info {
+  flex: 1 1 320px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.destacado__eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #e0a458;
+}
+
+.destacado__titulo {
+  font-size: clamp(26px, 4vw, 34px);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.destacado__datos {
+  margin: 4px 0 8px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px 24px;
+}
+
+.destacado__datos div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.destacado__datos dt {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-texto-suave);
+}
+
+.destacado__datos dd {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-texto);
+}
+
+.destacado__cta {
+  align-self: flex-start;
+}
+
+/* ---- comunes ---- */
+.vacio {
+  padding: 24px;
+  border: 1px dashed var(--color-borde-fuerte);
+  border-radius: var(--radio-md);
+  color: var(--color-texto-suave);
+}
+
+.destacado__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
