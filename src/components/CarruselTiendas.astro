@@ -1,0 +1,179 @@
+---
+// Carrusel infinito con las tiendas donde se juega SWU.
+// Los logos se muestran a color, un poco atenuados, y se iluminan al pasar el mouse.
+// Si una tienda no tiene logo todavía, se muestra su nombre.
+import { tiendas } from '../data/tiendas';
+import { slug } from '../utils';
+
+// Repetimos la lista para que la cinta siempre llene la pantalla,
+// y luego la duplicamos completa para que el bucle no tenga saltos.
+const MINIMO = 8;
+const base = tiendas.length ? tiendas : [];
+const veces = base.length ? Math.max(1, Math.ceil(MINIMO / base.length)) : 0;
+const cinta = Array.from({ length: veces }, () => base).flat();
+const duracion = Math.max(20, cinta.length * 4); // segundos por vuelta
+---
+
+{cinta.length > 0 && (
+  <section class="carrusel" aria-labelledby="titulo-tiendas">
+    <div class="contenedor carrusel__cabecera">
+      <h2 id="titulo-tiendas" class="carrusel__titulo">Tiendas donde se juega Star Wars: Unlimited</h2>
+    </div>
+
+    <!-- Lista accesible (lectores de pantalla y navegación con teclado) -->
+    <ul class="solo-lectores">
+      {tiendas.map((t) => (
+        <li><a href={`/eventos/${slug(t.ciudad)}`}>{t.nombre}, {t.ciudad}</a></li>
+      ))}
+    </ul>
+
+    <!-- Cinta visual (decorativa para lectores de pantalla) -->
+    <div class="carrusel__ventana" aria-hidden="true">
+      <div class="carrusel__cinta" style={`--duracion: ${duracion}s`}>
+        {[0, 1].map(() => (
+          <ul class="carrusel__grupo" role="list">
+            {cinta.map((t, i) => (
+              <li class="carrusel__item" data-repetido={i >= base.length ? '' : undefined}>
+                <a href={`/eventos/${slug(t.ciudad)}`} tabindex="-1" class="carrusel__enlace">
+                  {t.logo ? (
+                    <img src={t.logo} alt="" class="carrusel__logo" loading="lazy" />
+                  ) : (
+                    <span class="carrusel__nombre">{t.nombre}</span>
+                  )}
+                  <span class="carrusel__ciudad">{t.ciudad}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .carrusel {
+    padding-block: 56px;
+    background: var(--color-fondo);
+    border-top: 1px solid #1c2642;
+    overflow: hidden;
+  }
+
+  .carrusel__cabecera {
+    margin-bottom: 28px;
+  }
+
+  .carrusel__titulo {
+    font-size: 13px;
+    font-weight: 600;
+    font-family: var(--font-texto);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--color-texto-suave);
+    text-align: center;
+  }
+
+  .carrusel__ventana {
+    /* Bordes que se desvanecen a los lados */
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  }
+
+  .carrusel__cinta {
+    display: flex;
+    width: max-content;
+    animation: desplazar var(--duracion) linear infinite;
+  }
+
+  .carrusel__ventana:hover .carrusel__cinta {
+    animation-play-state: paused;
+  }
+
+  .carrusel__grupo {
+    display: flex;
+    align-items: center;
+    gap: 64px;
+    padding-right: 64px;
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .carrusel__enlace {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    min-width: 140px;
+  }
+
+  .carrusel__logo {
+    height: 72px;
+    width: auto;
+    max-width: 200px;
+    object-fit: contain;
+    /* A color pero atenuados, para que no compitan con el contenido */
+    filter: saturate(0.8);
+    opacity: 0.8;
+    transition: filter 0.25s ease, opacity 0.25s ease, transform 0.25s ease;
+  }
+
+  .carrusel__enlace:hover .carrusel__logo {
+    filter: none;
+    opacity: 1;
+    transform: scale(1.06);
+  }
+
+  .carrusel__nombre {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    font-family: var(--font-titulos);
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--color-texto);
+    opacity: 0.75;
+    white-space: nowrap;
+    transition: opacity 0.25s ease, color 0.25s ease;
+  }
+
+  .carrusel__enlace:hover .carrusel__nombre {
+    opacity: 1;
+    color: var(--color-amarillo);
+  }
+
+  .carrusel__ciudad {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--color-texto-suave);
+  }
+
+  @keyframes desplazar {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* Quien prefiere menos movimiento ve los logos quietos, centrados */
+  @media (prefers-reduced-motion: reduce) {
+    .carrusel__cinta {
+      animation: none;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .carrusel__grupo + .carrusel__grupo,
+    .carrusel__item[data-repetido] {
+      display: none;
+    }
+
+    .carrusel__grupo {
+      flex-wrap: wrap;
+      justify-content: center;
+      padding-right: 0;
+    }
+  }
+</style>

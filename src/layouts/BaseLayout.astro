@@ -5,6 +5,7 @@ import '../styles/global.css';
 import '../styles/eventos.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import CarruselTiendas from '../components/CarruselTiendas.astro';
 import { sitio, redes } from '../data/sitio';
 import { usarCalendario, apiKey, calendariosActivos } from '../data/calendarios';
 
@@ -42,6 +43,7 @@ const configCalendario = JSON.stringify({ apiKey, calendarios: calendariosActivo
     <main id="contenido">
       <slot />
     </main>
+    <CarruselTiendas />
     <Footer />
     {usarCalendario && (
       <script
